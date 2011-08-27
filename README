@@ -1,0 +1,10 @@
+
+Problem:
+The HD Homerun tools bundled (at least on Mac OS X) only lets you set the
+channel by the physical channel ID.  The virtual channel is what people are
+actually familiar with though.
+
+Solution:
+Throw together a Python script to map from virtual channel to a physical
+channel and program number.  So, for example, 2.1 maps to channel 44 program 3.
+
