@@ -8,3 +8,9 @@ Solution:
 Throw together a Python script to map from virtual channel to a physical
 channel and program number.  So, for example, 2.1 maps to channel 44 program 3.
 
+Usage:
+First, scan the channels that are available to you:
+ $ hdhomerun_config ${DEVICE_ID} scan /tuner${TUNER_NUM} scanfile.txt
+Then, launch this script:
+ $ python hdhr.py ${DEVICE_ID} ${TUNER_NUM} scanfile.txt
+
