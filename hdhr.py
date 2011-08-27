@@ -30,15 +30,18 @@ class HDHomerunController:
       self.prevChan = None
       self.currentChan = None
 
+      self.re_scan = re.compile("us-bcast:(\d*)")
+      self.re_program = re.compile("PROGRAM (\d*): (\d*\.\d*) (.*)")
+
    def parseLine(self, line):
       """Parses a single line from a scan file
       """
-      m = re.search("us-bcast:(\d*)", line);
+      m = self.re_scan.search(line);
       if m:
          self.scanning = m.group(1)
          return
 
-      m = re.search("PROGRAM (\d*): (\d*\.\d*) (.*)", line)
+      m = self.re_program.search(line)
       if m:
          p = Program()
          p.progid = int(m.group(1))
