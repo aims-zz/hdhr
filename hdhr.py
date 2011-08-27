@@ -174,6 +174,7 @@ class HDHomerunController:
 if __name__ == '__main__':
    if len(sys.argv) < 4:
       print("usage: %s DEVICE_ID TUNER_ORDINAL SCAN_FILE" % (sys.argv[0]))
+      sys.exit(1)
 
    device = sys.argv[1]
    tuner = sys.argv[2]
