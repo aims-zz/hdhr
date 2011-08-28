@@ -52,6 +52,11 @@ class HDHomerunController:
       self.re_scan = re.compile("us-bcast:(\d*)")
       self.re_program = re.compile("PROGRAM (\d*): (\d*\.\d*) (.*)")
 
+      # find out if there is already a client attached.
+      line = hdcommand("%s get /tuner%s/target" % (self.deviceId, self.tunerId))
+      self.target = line
+      print("Using existing target of %s" % self.target)
+
    def parseLine(self, line):
       """Parses a single line from a scan file
       """
