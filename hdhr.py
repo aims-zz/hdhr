@@ -51,6 +51,7 @@ class HDHomerunController:
 
       self.re_scan = re.compile("us-bcast:(\d*)")
       self.re_program = re.compile("PROGRAM (\d*): (\d*\.\d*) (.*)")
+      self.re_status = re.compile("ch=(?P<ch>[\w:]*) lock=(?P<lock>\w*) ss=(?P<ss>\d*) snq=(?P<snq>\d*) seq=(?P<seq>\d*) bps=(?P<bps>\d*)")
 
       # find out if there is already a client attached.
       line = hdcommand("%s get /tuner%s/target" % (self.deviceId, self.tunerId))
@@ -86,6 +87,18 @@ class HDHomerunController:
          self.parseLine(line)
 
       self.programs.sort()
+
+   def parseAndDisplayStatus(self, line):
+      m = self.re_status.search(line)
+      if m:
+         print("ch ... %s" % m.group("ch"))
+         print("lock . %s" % m.group("lock"))
+         print("ss ... %s" % m.group("ss"))
+         print("snq .. %s" % m.group("snq"))
+         print("seq .. %s" % m.group("seq"))
+         print("bps .. %f Mbps" % (float(m.group("bps"))/1000000.0))
+      else:
+         print("%s" % line)
 
    def findProgramByChannel(self, chanid):
       """Just looks up a channel like 11.4 and returns the program object.
@@ -138,8 +151,9 @@ class HDHomerunController:
    def status(self):
       """Shows the status of the tuner, stream, and what the script thinks the status is.
       """
-      hdcommand("%s get /tuner%s/streaminfo" % (self.deviceId, self.tunerId))
-      hdcommand("%s get /tuner%s/status" % (self.deviceId, self.tunerId))
+      line = hdcommand("%s get /tuner%s/status" % (self.deviceId, self.tunerId))
+      self.parseAndDisplayStatus(line)
+
       print("Channel .. %s" % self.currentChan)
       print("PrevCh ... %s" % self.prevChan)
 
