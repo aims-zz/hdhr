@@ -3,6 +3,23 @@ import readline
 import sys
 import os
 import re
+import subprocess
+
+def hdcommand(args):
+   """Spawns hdhomerun_config with the specified arguments
+   """
+   cmd = ["hdhomerun_config"] + args.split()
+   proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=False)
+   line = None
+
+   try:
+      proc.wait()
+      line = proc.stdout.readline()
+      line = line.rstrip()
+   except:
+      pass
+
+   return line
 
 class Program:
    """This defines a 'program', basically a stream of a broadcast channel
@@ -95,9 +112,9 @@ class HDHomerunController:
          print("Invalid channel %s" % chanid)
          return
 
-      os.system("hdhomerun_config %s set /tuner%s/channel %s" % (self.deviceId, self.tunerId, p.bcast))
-      os.system("hdhomerun_config %s set /tuner%s/program %s" % (self.deviceId, self.tunerId, p.progid))
-      os.system("hdhomerun_config %s set /tuner%s/target %s" % (self.deviceId, self.tunerId, self.target))
+      hdcommand("%s set /tuner%s/channel %s" % (self.deviceId, self.tunerId, p.bcast))
+      hdcommand("%s set /tuner%s/program %s" % (self.deviceId, self.tunerId, p.progid))
+      hdcommand("%s set /tuner%s/target %s" % (self.deviceId, self.tunerId, self.target))
       print("Changed to %s" % (self.currentChan))
 
    def changeTarget(self, target):
@@ -105,7 +122,7 @@ class HDHomerunController:
       """
       self.target = target
       print("Setting target to '%s'" % self.target)
-      os.system("hdhomerun_config %s set /tuner%s/target %s" % (self.deviceId, self.tunerId, self.target))
+      hdcommand("%s set /tuner%s/target %s" % (self.deviceId, self.tunerId, self.target))
 
    def prevChannel(self):
       """Changes back to the previously set channel.
@@ -116,8 +133,8 @@ class HDHomerunController:
    def status(self):
       """Shows the status of the tuner, stream, and what the script thinks the status is.
       """
-      os.system("hdhomerun_config %s get /tuner%s/streaminfo" % (self.deviceId, self.tunerId))
-      os.system("hdhomerun_config %s get /tuner%s/status" % (self.deviceId, self.tunerId))
+      hdcommand("%s get /tuner%s/streaminfo" % (self.deviceId, self.tunerId))
+      hdcommand("%s get /tuner%s/status" % (self.deviceId, self.tunerId))
       print("Channel .. %s" % self.currentChan)
       print("PrevCh ... %s" % self.prevChan)
 
